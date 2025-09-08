@@ -1,0 +1,53 @@
+<script setup lang="ts">
+   import type { imgTypes } from '../../Types/img';
+    defineProps<imgTypes>()
+
+    const emit = defineEmits(['click'])
+    const handleClick = () => emit('click')
+</script>
+
+<template >
+  <div 
+    class="sidebar-icon"
+    @click="handleClick"
+  >
+  <div 
+  class="iconsLateralBox"
+  :class="{ 'sidebar-icon--active': isActive }">
+    <img 
+      :src="iconUrl" 
+      :alt="label"
+      :width="60"
+      :height="60"
+      class="imgIcon"
+    />
+  </div>
+    <span class="sidebar-icon__label">{{label }}</span>
+  </div>
+</template>
+<style scoped>
+    .sidebar-icon{
+      width: 100%;
+      height: 10%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+}
+    .imgIcon{
+      cursor: pointer;
+    }
+    .sidebar-icon--active{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      cursor: pointer;
+      background-color: #167BFF ;
+    }
+    .iconsLateralBox{
+      width: 56px;
+      height: 56px;
+      margin-top: 10px;
+    }
+</style>

@@ -1,6 +1,5 @@
 <script setup>
-import ChatIcon from '../common/HeaderComponents/ChatIcon.vue';
-import Notification from '../common/HeaderComponents/NotificationIcon.vue';
+import HeaderIcons from '../common/HeaderComponents/HeaderIcons.vue';
 import ProfileIcon from '../common/HeaderComponents/ProfileIcon.vue';
 import SearchUser from '../common/HeaderComponents/SearchUser.vue';
 </script>
@@ -14,9 +13,12 @@ import SearchUser from '../common/HeaderComponents/SearchUser.vue';
         </div>
         <div class="headerOptionsBox">
             <div class="headerOptions">
-                <ChatIcon/>
-                <Notification/>
-                <ProfileIcon/>
+                <HeaderIcons 
+                    icon-url="https://img.icons8.com/bubbles/100/alarm.png"
+                />
+                <HeaderIcons 
+                    icon-url="https://img.icons8.com/bubbles/100/chat.png"
+                />
             </div>
         </div>
     </div>
@@ -24,7 +26,7 @@ import SearchUser from '../common/HeaderComponents/SearchUser.vue';
 <style scoped>
     .containerHeader{
         width: 100%;
-        height: 4rem;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: space-evenly;
@@ -40,7 +42,7 @@ import SearchUser from '../common/HeaderComponents/SearchUser.vue';
         font-size: 2.5em;
     }
     .searchBox{
-        width: 35%;
+        width: 38%;
     }
     .headerOptions{
         display: flex;

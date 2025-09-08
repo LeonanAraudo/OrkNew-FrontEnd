@@ -45,6 +45,10 @@
       cursor: pointer;
       background-color: #167BFF ;
     }
+    .sidebar-icon__label{
+      font-family: "Montserrat";
+      color: #4B4B4B;
+    }
     .iconsLateralBox{
       width: 56px;
       height: 56px;

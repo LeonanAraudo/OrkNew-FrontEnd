@@ -39,7 +39,7 @@ import SearchUser from '../common/HeaderComponents/SearchUser.vue';
     }
     .tittle{
         font-family: "Averia Sans Libre";
-        font-size: 2.5em;
+        font-size: 3em;
     }
     .searchBox{
         width: 38%;

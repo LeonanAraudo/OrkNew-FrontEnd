@@ -7,8 +7,13 @@ import Lateral from './Lateral.vue';
         <header class="headerBox">
             <Header/>
         </header>
-        <div class="lateralBox">
-            <Lateral/>
+        <div class="midBox">
+            <div class="lateralBox">
+                <Lateral/>
+            </div>
+            <div class="whiteBox">
+
+            </div>
         </div>
     </div>
 </template>
@@ -22,10 +27,23 @@ import Lateral from './Lateral.vue';
         width: 100%; 
         height: 10%; 
     }
+    .midBox{
+        height: 90%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
     .lateralBox{
         width: 4.5rem;
         height: 90%;
-        padding-top: 20px;
+    }
+    .whiteBox{
+        width: 93%;
+        height: 97%;
+        border-radius: 19px;
+        margin-right: 15px;
+        margin-bottom: 10px;
+        background-color: #ffffff;
     }
    
 </style>

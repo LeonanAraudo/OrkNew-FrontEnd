@@ -1,15 +1,15 @@
 <script setup>
-import Header from './Header.vue';
-import Lateral from './Lateral.vue';
+import AppHeader from './AppHeader.vue';
+import AppLateral from './AppLateral.vue';
 </script>
 <template>
     <div class="containerBackground">
         <header class="headerBox">
-            <Header/>
+            <AppHeader/>
         </header>
         <div class="midBox">
             <div class="lateralBox">
-                <Lateral/>
+                <AppLateral/>
             </div>
             <div class="whiteBox">
 

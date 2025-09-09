@@ -1,7 +1,7 @@
 <script setup>
-import HeaderIcons from '../common/HeaderComponents/HeaderIcons.vue';
-import ProfileIcon from '../common/HeaderComponents/ProfileIcon.vue';
-import SearchUser from '../common/HeaderComponents/SearchUser.vue';
+import BaseHeaderIcons from '../common/HeaderComponents/HeaderIcons.vue';
+import BaseProfileIcon from '../common/HeaderComponents/ProfileIcon.vue';
+import BaseSearchUser from '../common/HeaderComponents/SearchUser.vue';
 </script>
 <template>
     <div class="containerHeader">
@@ -9,14 +9,14 @@ import SearchUser from '../common/HeaderComponents/SearchUser.vue';
             <p class="tittle">OrkNew</p>
         </div>
         <div class="searchBox">
-            <SearchUser/>
+            <BaseSearchUser/>
         </div>
         <div class="headerOptionsBox">
             <div class="headerOptions">
-                <HeaderIcons 
+                <BaseHeaderIcons 
                     icon-url="https://img.icons8.com/bubbles/100/alarm.png"
                 />
-                <HeaderIcons 
+                <BaseHeaderIcons 
                     icon-url="https://img.icons8.com/bubbles/100/chat.png"
                 />
             </div>

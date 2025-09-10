@@ -1,9 +1,11 @@
 <script setup>
+import FormLogin from '../Components/forms/FormLogin.vue';
 </script>
 
 <template>
     <div class="conteiner">
         <div class="box1">
+            <FormLogin/>
         </div>
         <div class="box2">
             <img class="img1" src="../assets/image.png" alt="" srcset="">
@@ -11,22 +13,16 @@
     </div>
 </template>
 
-<style >
-*{
-    margin: 0px;
-    padding: 0px;
-    box-sizing: border-box;
-}
-body {
-    background-color: #E5F0FD;
-    overflow: hidden;
-}
+<style scoped >
+
 .conteiner{
     height: 100vh;
     width: 100vw;
     display: flex;
     align-items: stretch;
     flex-direction: row;
+    background-color: #E5F0FD;
+    overflow: hidden
 }
 .box1{
     width: 40%;

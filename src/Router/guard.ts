@@ -58,7 +58,7 @@ export function setupAuthGuards(router: Router): void {
           name: 'Login',
           query: { 
             redirect: to.fullPath,
-            message: 'Você precisa fazer login para acessar esta página'
+            message: 'Faça Login'
           }
         })
         return
@@ -101,8 +101,8 @@ export function setupAuthGuards(router: Router): void {
     
     // 4. Redirecionar usuários logados das páginas de guest
     if (requiresGuest && authStore.isAuthenticated) {
-      console.log('👤 Usuário já logado, redirecionando para dashboard')
-      const redirectTo = (to.query.redirect as string) || '/dashboard'
+      console.log('👤 Usuário já logado, redirecionando para tela principal')
+      const redirectTo = (to.query.redirect as string) || '/Home'
       next(redirectTo)
       return
     }
@@ -130,7 +130,7 @@ export function setupAuthGuards(router: Router): void {
   // Guard para verificar sessão antes de resolver rota
   router.beforeResolve(async (
     to: RouteLocationNormalized,
-    from: RouteLocationNormalized,
+    _from: RouteLocationNormalized,
     next: NavigationGuardNext
   ) => {
     const authStore = useAuthStore()
@@ -223,8 +223,8 @@ export function useRouteGuards() {
   const authStore = useAuthStore()
 
   const canAccess = (routeName: string): boolean => {
-    const protectedRoutes = ['Dashboard', 'Profile', 'Settings']
-    const adminRoutes = ['Admin', 'UserManagement', 'AdminSettings']
+    const protectedRoutes = ['Home']
+    const adminRoutes = ['Admin']
     
     if (adminRoutes.includes(routeName)) {
       return authStore.isAuthenticated && checkAdminRole(authStore.user)

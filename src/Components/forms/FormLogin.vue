@@ -2,9 +2,9 @@
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Password from 'primevue/password';
-import { z} from 'zod'
+import { z, ZodError} from 'zod'
 import { useAuthStore } from '../../Stores/authStore';
-import { onMounted, reactive, ref } from 'vue';
+import { onUnmounted, reactive, ref, watch } from 'vue';
 
 const formLogin = z.object({
         email:z.string().min(1,"Email obrigatório").email({message: "Email inválido"}),
@@ -17,50 +17,66 @@ const form = reactive<FormLogin>({
     email: '',
     password: ''
 })
+
 const loginError = ref('')
 const authStore = useAuthStore()
 async function handleLogin (): Promise<void> {
     loginError.value = ''
-
     if(!formLogin) return
-
-    const credentials: FormLogin = {
-        email: form.email,
-        password: form.password,
-  }
-  
-    const result = await authStore.login(credentials)
-
-    if(result.success){
-        console.log("Login realizado com sucesso")
-    }else{
-        console.log("Erro ao realizar Login", result.error);
-    }
+    try{
+        const credentials = formLogin.parse(form)  
+        const result = await authStore.login(credentials)
+        if(result.success){
+                console.log("Login realizado com sucesso")
+            }else{
+                console.log("Erro ao realizar Login", result.error);
+            }
+    }catch(err){
+        if (err instanceof ZodError) {
+            loginError.value = err.issues[0]?.message || "Erro no formulário"
+        }
 }
+}
+watch(
+  [() => form.email, () => form.password], 
+  () => {
+    loginError.value = '' 
+  }
+)
 
+onUnmounted(() => {
+    form.email = ''
+    form.password = ''
+})
 </script>
 
 <template>
-      <Form class="formularioLogin" >
+      <Form @submit.prevent="handleLogin" class="formularioLogin" >
                 <p class="titulo">Entre e sinta-se à vontade</p>
                 <div class="grupoInput">
                     <div class="bloco-input">
                             <label for="email" class="label">E-mail</label>
                             <InputText 
-                                placeholder="Digite seu e-mail" 
+                                v-model="form.email"
+                                placeholder="seu@email.com"
                                 id="email"  
                                 class="input" 
-                                type="email" 
+                                type="email"
+                                required
+                                :disabled="authStore.isLoading"
                             />
                     </div>
                    <div class="bloco-input">
                             <label for="senha" class="label">Senha</label>
                             <Password 
+                            v-model="form.password"
                               toggleMask 
                               placeholder="Digite sua senha" 
                               id="senha" 
                               class="password-field"
                               input-class="password-input"
+                              required
+                             :disabled="authStore.isLoading"
                             />
                     </div>
                 </div>

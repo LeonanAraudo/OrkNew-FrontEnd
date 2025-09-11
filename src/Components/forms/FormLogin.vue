@@ -2,51 +2,42 @@
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Password from 'primevue/password';
-import { z, ZodError} from 'zod'
 import { useAuthStore } from '../../Stores/authStore';
-import { onUnmounted, reactive, ref, watch } from 'vue';
+import { onUnmounted, reactive } from 'vue';
+import { type LoginForm, formLogin } from '../../Schemas/validationLoginForm';
+import { useValidation } from '../../Composables/useFormLoginValidation';
+import { useRoute, useRouter } from 'vue-router';
+import { goToRegister } from '../../Utils/goToRegister';
 
-const formLogin = z.object({
-        email:z.string().min(1,"Email obrigatório").email({message: "Email inválido"}),
-        password: z.string().min(6,"Senha obrigatória")
-})
+const router = useRouter()
+const route = useRoute()
 
-type FormLogin =z.infer<typeof formLogin>
+function handleClick(){
+goToRegister(router, route)
+}
 
-const form = reactive<FormLogin>({
+const form = reactive<LoginForm>({
     email: '',
     password: ''
 })
+const { errors, validate} = useValidation<LoginForm>(formLogin)
 
-const loginError = ref('')
 const authStore = useAuthStore()
 async function handleLogin (): Promise<void> {
-    loginError.value = ''
-    if(!formLogin) return
-    try{
-        const credentials = formLogin.parse(form)  
+    const credentials = validate(form)
+    if(!credentials) return
         const result = await authStore.login(credentials)
         if(result.success){
-                console.log("Login realizado com sucesso")
-            }else{
-                console.log("Erro ao realizar Login", result.error);
-            }
-    }catch(err){
-        if (err instanceof ZodError) {
-            loginError.value = err.issues[0]?.message || "Erro no formulário"
+            console.log("Login realizado com sucesso")
+        }else{
+            console.log("Erro ao tentar enviar os dados de login", result.error)
         }
 }
-}
-watch(
-  [() => form.email, () => form.password], 
-  () => {
-    loginError.value = '' 
-  }
-)
 
 onUnmounted(() => {
     form.email = ''
     form.password = ''
+    for (const key in errors) delete errors[key];
 })
 </script>
 
@@ -61,10 +52,10 @@ onUnmounted(() => {
                                 placeholder="seu@email.com"
                                 id="email"  
                                 class="input" 
-                                type="email"
-                                required
+                                type="text"
                                 :disabled="authStore.isLoading"
                             />
+                    <p v-if="errors.email" class="error">{{ errors.email }}</p>
                     </div>
                    <div class="bloco-input">
                             <label for="senha" class="label">Senha</label>
@@ -75,16 +66,22 @@ onUnmounted(() => {
                               id="senha" 
                               class="password-field"
                               input-class="password-input"
-                              required
                              :disabled="authStore.isLoading"
                             />
+                    <p v-if="errors.password" class="error">{{ errors.password }}</p>
                     </div>
                 </div>
                 <div class="containerBotao">
-                  <Button type="submit" class="botaoEntrar" label="Entrar" />
+                  <Button 
+                  type="submit"
+                   class="botaoEntrar" 
+                   label="Entrar" 
+                   :loading="authStore.isLoading"
+                   :disabled="authStore.isLoading"
+                   />
                 </div>
                 <div>
-                    <p class="textoBaixo">Ainda não tem conta?<router-link to="/Cadastro" class="textoBaixoPT2">Cadastre-se</router-link></p>
+                    <p class="textoBaixo">Ainda não tem conta?<span @click="handleClick" class="textoBaixoPT2">Cadastre-se</span></p>
                 </div>
             </Form> 
 </template>
@@ -100,6 +97,7 @@ onUnmounted(() => {
     flex-direction: column;
     border-radius: 16px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    font-family: "Montserrat";
 }
 .containerBotao{
     width: 100%;
@@ -171,7 +169,7 @@ input{
     background-color: #E3E5ED !important;
     width: 100% !important;
 }
-.erro{
+.error{
     color: red;
     padding-left: 10px;
 }

@@ -24,6 +24,14 @@ const routes: Array<RouteRecordRaw> = [
       ...routeMeta.withTitle('Entrar')
     }
   },
+   {
+    path: '/Register',
+    name: 'Register',
+    component: () => import('../Views/Register.vue'),
+    meta: {
+      ...routeMeta.withTitle('Cadastrar')
+    }
+  },
  
 //  Página para quando tentativas de login esgotam
   {

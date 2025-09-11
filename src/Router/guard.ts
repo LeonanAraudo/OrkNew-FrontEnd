@@ -64,24 +64,6 @@ export function setupAuthGuards(router: Router): void {
         return
       }
       
-      // 2. Verificar se precisa de privilégios de admin
-      if (requiresAdmin) {
-        // Aqui você pode verificar se o usuário tem role admin
-        // Baseado na sua estrutura User, você pode ter um campo role ou isAdmin
-        const isAdmin = checkAdminRole(authStore.user)
-        
-        if (!isAdmin) {
-          console.log('👮‍♂️ Usuário sem privilégios administrativos')
-          next({ 
-            name: 'Unauthorized',
-            query: { 
-              message: 'Você não tem permissão para acessar esta área'
-            }
-          })
-          return
-        }
-      }
-
       // 3. Verificar permissões específicas se definidas
       if (to.meta.permissions && to.meta.permissions.length > 0) {
         const hasPermission = checkUserPermissions(authStore.user, to.meta.permissions)

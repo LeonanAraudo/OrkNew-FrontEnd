@@ -1,13 +1,43 @@
-<script setup>
+<script setup lang="ts">
 import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import Password from 'primevue/password';
 import Stepper from 'primevue/stepper';
 import StepList from 'primevue/steplist';
 import StepPanels from 'primevue/steppanels';
-import StepItem from 'primevue/stepitem';
 import Step from 'primevue/step';
 import StepPanel from 'primevue/steppanel';
+import { reactive } from 'vue';
+import { useRegister } from '../../Composables/useRegister';
+import { useRoute, useRouter } from 'vue-router';
+import { goToLogin } from '../../Utils/goToRoutes';
+import { useValidation } from '../../Composables/useFormValidation';
+import { formRegister, type RegisterForm } from '../../Schemas/validationRegisterForm';
+const route = useRoute()
+const router = useRouter()
+
+function toLogin(){
+ goToLogin(router,route)
+}
+const {register} = useRegister()
+
+const formData = reactive({
+  userName: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  password: ''
+})
+const {errors, validate} = useValidation<RegisterForm>(formRegister)
+
+const handleSubmit = async () => {
+    const credentials = validate(formData)
+    if(!credentials) return
+    const result = await register(credentials)
+    if(result.success){
+        toLogin()
+    }
+}
 </script>
 
 <template>
@@ -17,90 +47,98 @@ import StepPanel from 'primevue/steppanel';
                 <Step class="step" value="2"> II</Step>
                 <Step class="step" value="3"> III</Step>
             </StepList>
-            <StepPanels class="panelsBox">
-                <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="1">
-                    <div class="input-box">
-                        <div class="bloco-input">
-                                 <label for="username" class="label">Username</label>
-                                 <InputText 
-                                     placeholder="Digite seu username" 
-                                     id="username"  
-                                     class="input" 
-                                     type="text" 
-                                 />
-                         </div>
+            <form @submit.prevent="handleSubmit"  class="formPanelsBox">
+                <StepPanels class="panelsBox" >
+                    <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="1">
+                        <div class="input-box">
+                            <div class="bloco-input">
+                                     <label for="username" class="label">Username</label>
+                                     <InputText 
+                                         placeholder="Digite seu username" 
+                                         id="username"  
+                                         class="input" 
+                                         type="text"
+                                         v-model="formData.userName"
+                                     />
+                             </div>
+                              <div class="bloco-input">
+                                     <label for="fistName" class="label">Fistname</label>
+                                     <InputText 
+                                         placeholder="Digite seu primeiro nome" 
+                                         id="fistName"  
+                                         class="input" 
+                                         type="text" 
+                                         v-model="formData.firstName"
+                                     />
+                             </div>
+                              <div class="bloco-input">
+                                     <label for="lastNmae" class="label">Lastname</label>
+                                     <InputText 
+                                         placeholder="Digite seu ultimo nome" 
+                                         id="lastNmae"  
+                                         class="input" 
+                                         type="text"
+                                         v-model="formData.lastName"
+                                     />
+                             </div>
+                        </div>
+                            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('2')" />
+                    </StepPanel>
+                    <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="2">
+                        <div class="input-box">
+                            <div class="bloco-input">
+                                  <label for="email" class="label">E-mail</label>
+                                     <InputText 
+                                         placeholder="Digite seu e-mail" 
+                                         id="email"  
+                                         class="input" 
+                                         type="email"
+                                          v-model="formData.email"
+                                     />
+                              <p v-if="errors.email" class="error">{{ errors.email }}</p>
+                             </div>
+                        </div>
+                        <div class="buttonsBoxStep">
+                            <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" />
+                            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('3')" />
+                        </div>
+                    </StepPanel>
+                    <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="3">
+                      <div class="input-box">
                           <div class="bloco-input">
-                                 <label for="fistName" class="label">Fistname</label>
-                                 <InputText 
-                                     placeholder="Digite seu primeiro nome" 
-                                     id="fistName"  
-                                     class="input" 
-                                     type="text" 
+                                 <label for="senha" class="label">Senha</label>
+                                 <Password 
+                                   toggleMask 
+                                   placeholder="Digite sua senha" 
+                                   id="senha" 
+                                   class="password-field"
+                                   input-class="password-input"
+                                    v-model="formData.password"
                                  />
                          </div>
-                          <div class="bloco-input">
-                                 <label for="lastNmae" class="label">Lastname</label>
-                                 <InputText 
-                                     placeholder="Digite seu ultimo nome" 
-                                     id="lastNmae"  
-                                     class="input" 
-                                     type="text" 
+                         <div class="bloco-input">
+                                 <label for="confirmarSenha" class="label">Confirmar senha</label>
+                                 <Password 
+                                   toggleMask 
+                                   placeholder="Confirme sua senha" 
+                                   id="confirmarSenha" 
+                                   class="password-field"
+                                   input-class="password-input"
                                  />
                          </div>
-                    </div>
-                        <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('2')" />
-                </StepPanel>
-                <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="2">
-                    <div class="input-box">
-                        <div class="bloco-input">
-                              <label for="email" class="label">E-mail</label>
-                                 <InputText 
-                                     placeholder="Digite seu e-mail" 
-                                     id="email"  
-                                     class="input" 
-                                     type="email" 
-                                 />
-                         </div>
-                    </div>
-                    <div class="flex pt-6 justify-between">
-                        <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" />
-                        <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('3')" />
-                    </div>
-                </StepPanel>
-                <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="3">
-                  <div class="input-box">
-                      <div class="bloco-input">
-                             <label for="senha" class="label">Senha</label>
-                             <Password 
-                               toggleMask 
-                               placeholder="Digite sua senha" 
-                               id="senha" 
-                               class="password-field"
-                               input-class="password-input"
-                             />
-                     </div>
-                     <div class="bloco-input">
-                             <label for="confirmarSenha" class="label">Confirmar senha</label>
-                             <Password 
-                               toggleMask 
-                               placeholder="Confirme sua senha" 
-                               id="confirmarSenha" 
-                               class="password-field"
-                               input-class="password-input"
-                             />
-                     </div>>
-                  </div>
-                    <div class="pt-6">
-                        <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('2')" />
-                    </div>
-                </StepPanel>
-            </StepPanels>
+                      </div>
+                        <div class="buttonsBoxStep">
+                            <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('2')" />
+                            <Button type="submit" class="buttonRegister" label="Cadastrar" />
+                        </div>
+                    </StepPanel>
+                </StepPanels>
+            </form>
         </Stepper>      
 </template>
 
 <style >
 .progress{
-    background-color: #FAFEFF;
     display: flex;
     width: 40%;
     height: 80%;
@@ -111,15 +149,18 @@ import StepPanel from 'primevue/steppanel';
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     font-family: "Montserrat";
     background-color: #ffffff;
-
 }
 .stepList{
     width: 90%;
     height: 10%;
 }
-.panelsBox{
+.formPanelsBox{
     width: 100%;
     height: 90%;
+}
+.panelsBox{
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -141,6 +182,13 @@ import StepPanel from 'primevue/steppanel';
     align-items: center;
     justify-content: center;
     flex-direction: column;
+}
+.buttonsBoxStep{
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
 }
 .label{
     font-weight:600;
@@ -169,6 +217,12 @@ input{
 .erro{
     color: red;
     padding-left: 10px;
+}
+.buttonRegister{
+    background-color: #097233 !important;
+    border: none !important;
+    outline: none !important;
+    color: #fff !important;
 }
 @media(max-width: 768px){
 .formulario{

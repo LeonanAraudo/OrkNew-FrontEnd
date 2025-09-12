@@ -12,3 +12,16 @@ export function goToRegister(
     }
   });
 }
+
+export function goToLogin(
+  router: Router,
+  route: RouteLocationNormalized
+) {
+  router.push({
+    path: '/Login',
+    query: {
+      redirect: route.query.redirect?.toString() || '/',
+      message: route.query.message?.toString() || ''
+    }
+  });
+}

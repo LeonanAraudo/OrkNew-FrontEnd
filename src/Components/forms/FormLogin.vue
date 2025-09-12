@@ -5,9 +5,9 @@ import Password from 'primevue/password';
 import { useAuthStore } from '../../Stores/authStore';
 import { onUnmounted, reactive } from 'vue';
 import { type LoginForm, formLogin } from '../../Schemas/validationLoginForm';
-import { useValidation } from '../../Composables/useFormLoginValidation';
+import { useValidation } from '../../Composables/useFormValidation';
 import { useRoute, useRouter } from 'vue-router';
-import { goToRegister } from '../../Utils/goToRegister';
+import { goToRegister } from '../../Utils/goToRoutes';
 
 const router = useRouter()
 const route = useRoute()

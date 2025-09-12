@@ -11,18 +11,17 @@ import { goToRegister } from '../../Utils/goToRoutes';
 
 const router = useRouter()
 const route = useRoute()
+const { errors, validate} = useValidation<LoginForm>(formLogin)
+const form = reactive<LoginForm>({
+    email: '',
+    password: ''
+})
+const authStore = useAuthStore()
 
 function handleClick(){
 goToRegister(router, route)
 }
 
-const form = reactive<LoginForm>({
-    email: '',
-    password: ''
-})
-const { errors, validate} = useValidation<LoginForm>(formLogin)
-
-const authStore = useAuthStore()
 async function handleLogin (): Promise<void> {
     const credentials = validate(form)
     if(!credentials) return

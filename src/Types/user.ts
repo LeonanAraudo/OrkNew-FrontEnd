@@ -3,8 +3,6 @@ export interface User {
   email: string;
   password: string;
   userName: string;
-  firstName: string;
-  lastName: string;
 }
 
 export interface AuthData {

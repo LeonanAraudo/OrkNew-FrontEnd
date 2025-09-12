@@ -54,9 +54,7 @@ export const authService = {
     async Register(credentials: User){
         try{
             const response = await axios.post(`${API_BASE_URL}/v1/api/users/`,{
-                userName: credentials.userName,
-                firstName: credentials.firstName,
-                lastName: credentials.lastName,
+                username: credentials.userName,
                 email: credentials.email,
                 password: credentials.password
             })

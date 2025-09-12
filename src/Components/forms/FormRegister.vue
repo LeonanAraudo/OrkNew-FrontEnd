@@ -7,137 +7,163 @@ import StepList from 'primevue/steplist';
 import StepPanels from 'primevue/steppanels';
 import Step from 'primevue/step';
 import StepPanel from 'primevue/steppanel';
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { useRegister } from '../../Composables/useRegister';
 import { useRoute, useRouter } from 'vue-router';
 import { goToLogin } from '../../Utils/goToRoutes';
 import { useValidation } from '../../Composables/useFormValidation';
-import { formRegister, type RegisterForm } from '../../Schemas/validationRegisterForm';
+import { stepOneSchema, stepTwoSchema } from '../../Schemas/validationRegisterForm';
+
 const route = useRoute()
 const router = useRouter()
+const { register, isLoading } = useRegister()
 
-function toLogin(){
- goToLogin(router,route)
-}
-const {register} = useRegister()
+const { errors: step1Errors, validate: validateStep1 } = useValidation(stepOneSchema)
+const { errors: step2Errors, validate: validateStep2 } = useValidation(stepTwoSchema)
 
+const currentStep = ref('1')
+const confirmPassword = ref('')
 const formData = reactive({
   userName: '',
-  firstName: '',
-  lastName: '',
   email: '',
   password: ''
 })
-const {errors, validate} = useValidation<RegisterForm>(formRegister)
 
-const handleSubmit = async () => {
-    const credentials = validate(formData)
-    if(!credentials) return
-    const result = await register(credentials)
-    if(result.success){
-        toLogin()
-    }
+const validateStep = (step: string): boolean => {
+  switch(step) {
+    case '1':
+      const step1Data = {
+        userName: formData.userName,
+        email: formData.email
+      }
+      return validateStep1(step1Data) !== null
+      
+    case '2':
+      const step2Data = {
+          password: formData.password,
+          confirmPassword: confirmPassword.value
+      }
+      return validateStep2(step2Data) !== null
+      
+    default:
+      return true
+  }
+}
+
+const goToStep = (targetStep: string, activateCallback: Function) => {
+  if (parseInt(targetStep) > parseInt(currentStep.value)) {
+    if (!validateStep(currentStep.value)) return
+  }
+  currentStep.value = targetStep
+  activateCallback(targetStep)
+}
+
+const toLogin = () => goToLogin(router, route)
+
+const handleSubmit = async (): Promise<void> => {
+  const allStepsValid = ['1', '2'].every(step => validateStep(step))
+  
+  if (!allStepsValid) return
+  
+  const result = await register(formData)
+  if (result.success) toLogin()
 }
 </script>
 
 <template>
-        <Stepper value="1" class="progress">
-            <StepList class="stepList">
-                <Step class="step" value="1"> I</Step>
-                <Step class="step" value="2"> II</Step>
-                <Step class="step" value="3"> III</Step>
-            </StepList>
-            <form @submit.prevent="handleSubmit"  class="formPanelsBox">
-                <StepPanels class="panelsBox" >
-                    <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="1">
-                        <div class="input-box">
-                            <div class="bloco-input">
-                                     <label for="username" class="label">Username</label>
-                                     <InputText 
-                                         placeholder="Digite seu username" 
-                                         id="username"  
-                                         class="input" 
-                                         type="text"
-                                         v-model="formData.userName"
-                                     />
-                             </div>
-                              <div class="bloco-input">
-                                     <label for="fistName" class="label">Fistname</label>
-                                     <InputText 
-                                         placeholder="Digite seu primeiro nome" 
-                                         id="fistName"  
-                                         class="input" 
-                                         type="text" 
-                                         v-model="formData.firstName"
-                                     />
-                             </div>
-                              <div class="bloco-input">
-                                     <label for="lastNmae" class="label">Lastname</label>
-                                     <InputText 
-                                         placeholder="Digite seu ultimo nome" 
-                                         id="lastNmae"  
-                                         class="input" 
-                                         type="text"
-                                         v-model="formData.lastName"
-                                     />
-                             </div>
-                        </div>
-                            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('2')" />
-                    </StepPanel>
-                    <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="2">
-                        <div class="input-box">
-                            <div class="bloco-input">
-                                  <label for="email" class="label">E-mail</label>
-                                     <InputText 
-                                         placeholder="Digite seu e-mail" 
-                                         id="email"  
-                                         class="input" 
-                                         type="email"
-                                          v-model="formData.email"
-                                     />
-                              <p v-if="errors.email" class="error">{{ errors.email }}</p>
-                             </div>
-                        </div>
-                        <div class="buttonsBoxStep">
-                            <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('1')" />
-                            <Button label="Next" icon="pi pi-arrow-right" iconPos="right" @click="activateCallback('3')" />
-                        </div>
-                    </StepPanel>
-                    <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="3">
-                      <div class="input-box">
-                          <div class="bloco-input">
-                                 <label for="senha" class="label">Senha</label>
-                                 <Password 
-                                   toggleMask 
-                                   placeholder="Digite sua senha" 
-                                   id="senha" 
-                                   class="password-field"
-                                   input-class="password-input"
-                                    v-model="formData.password"
-                                 />
-                         </div>
-                         <div class="bloco-input">
-                                 <label for="confirmarSenha" class="label">Confirmar senha</label>
-                                 <Password 
-                                   toggleMask 
-                                   placeholder="Confirme sua senha" 
-                                   id="confirmarSenha" 
-                                   class="password-field"
-                                   input-class="password-input"
-                                 />
-                         </div>
-                      </div>
-                        <div class="buttonsBoxStep">
-                            <Button label="Back" severity="secondary" icon="pi pi-arrow-left" @click="activateCallback('2')" />
-                            <Button type="submit" class="buttonRegister" label="Cadastrar" />
-                        </div>
-                    </StepPanel>
-                </StepPanels>
-            </form>
-        </Stepper>      
+  <Stepper :value="currentStep" class="progress">
+    <StepList class="stepList">
+      <Step class="step" value="1">I</Step>
+      <Step class="step" value="2">II</Step>
+    </StepList>
+    <StepPanels class="panelsBox">
+      <form @submit.prevent="handleSubmit" class="formPanelsBox">
+        <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="1">
+          <div class="input-box">
+            <div class="bloco-input">
+              <label for="username" class="label">Username</label>
+              <InputText 
+                id="username" 
+                v-model="formData.userName"
+                placeholder="Digite seu username" 
+                class="input" 
+                :disabled="isLoading"
+              />
+              <p v-if="step1Errors.userName" class="error">{{ step1Errors.userName }}</p>
+            </div>
+            <div class="bloco-input">
+              <label for="email" class="label">E-mail</label>
+              <InputText 
+                id="email" 
+                v-model="formData.email"
+                placeholder="Digite seu e-mail" 
+                type="email"
+                class="input" 
+                :disabled="isLoading"
+              />
+              <p v-if="step1Errors.email" class="error">{{ step1Errors.email }}</p>
+            </div>
+          </div>
+          <Button 
+            label="Next" 
+            icon="pi pi-arrow-right" 
+            iconPos="right" 
+            @click="goToStep('2', activateCallback)" 
+          />
+        </StepPanel>
+
+        <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="2">
+          <div class="input-box">
+            <div class="bloco-input">
+              <label for="senha" class="label">Senha</label>
+              <Password 
+                id="senha" 
+                v-model="formData.password"
+                toggleMask 
+                placeholder="Digite sua senha" 
+                class="password-field"
+                input-class="password-input"
+                :disabled="isLoading"
+              />
+              <p v-if="step2Errors.password" class="error">{{ step2Errors.password }}</p>
+            </div>
+            <div class="bloco-input">
+              <label for="confirmarSenha" class="label">Confirmar senha</label>
+              <Password 
+                id="confirmarSenha" 
+                v-model="confirmPassword"
+                toggleMask 
+                placeholder="Confirme sua senha" 
+                class="password-field"
+                input-class="password-input"
+                :disabled="isLoading"
+              />
+              <p v-if="step2Errors.confirmPassword" class="error">{{ step2Errors.confirmPassword }}</p>
+            </div>
+          </div>
+          <div class="buttonsBoxStep">
+            <Button 
+              label="Back" 
+              severity="secondary" 
+              icon="pi pi-arrow-left" 
+              @click="goToStep('1', activateCallback)" 
+              :disabled="isLoading"
+            />
+            <Button 
+              type="submit" 
+              class="buttonRegister" 
+              label="Cadastrar"
+              :loading="isLoading"
+              :disabled="isLoading"
+            />
+          </div>
+        </StepPanel>
+      </form>
+    </StepPanels>
+  </Stepper>      
 </template>
 
-<style >
+<style>
 .progress{
     display: flex;
     width: 40%;
@@ -154,16 +180,16 @@ const handleSubmit = async () => {
     width: 90%;
     height: 10%;
 }
-.formPanelsBox{
-    width: 100%;
-    height: 90%;
-}
 .panelsBox{
     width: 100%;
-    height: 100%;
+    height: 90%;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.formPanelsBox{
+    width: 100%;
+    height: 100%;
 }
 .input-box{
     width: 100%;
@@ -214,7 +240,7 @@ input{
     background-color: #E3E5ED !important;
     width: 100% !important;
 }
-.erro{
+.error{
     color: red;
     padding-left: 10px;
 }

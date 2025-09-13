@@ -8,7 +8,7 @@ const routes: Array<RouteRecordRaw> = [
 
   // Páginas públicas (não requer autenticação)
   {
-    path: '/Login',
+    path: '/',
     name: 'Login',
     component: () => import('../Views/Login.vue'),
     meta: {
@@ -46,7 +46,7 @@ const routes: Array<RouteRecordRaw> = [
           query: {
             ...to.query,
             message: 'Cadastre-se',
-            redirect: to.query.redirect?.toString() || '/Login',
+            redirect: to.query.redirect?.toString() || '/',
           }
         })
       } else {
@@ -82,7 +82,7 @@ const routes: Array<RouteRecordRaw> = [
           query: {
             ...to.query,
             message: 'Bem Vindo',
-            redirect: to.query.redirect?.toString() || '/Login',
+            redirect: to.query.redirect?.toString() || '/',
           }
         })
       } else {

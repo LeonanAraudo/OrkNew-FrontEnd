@@ -1,4 +1,4 @@
-// router/guards.ts - Guards baseado no seu AuthStore
+// router/guards.ts - Guards corrigido
 import type { Router, RouteLocationNormalized, NavigationGuardNext } from 'vue-router'
 import { useAuthStore } from '../Stores/authStore'
 
@@ -50,7 +50,14 @@ export function setupAuthGuards(router: Router): void {
       canAttemptLogin: authStore.canAttemptLogin
     })
 
-    // 1. Verificar se rota requer autenticação
+    // 1. NOVO: Verificar se usuário logado está tentando acessar página de convidado
+    if (requiresGuest && authStore.isAuthenticated) {
+      console.log('👤 Usuário autenticado tentando acessar página de convidado, redirecionando para Home')
+      next({ name: 'Home' })
+      return
+    }
+
+    // 2. Verificar se rota requer autenticação
     if (requiresAuth) {
       if (!authStore.isAuthenticated) {
         console.log('🔐 Usuário não autenticado, redirecionando para login')
@@ -64,7 +71,19 @@ export function setupAuthGuards(router: Router): void {
         return
       }
       
-      // 3. Verificar permissões específicas se definidas
+      // 3. Verificar se requer admin
+      if (requiresAdmin && !checkAdminRole(authStore.user)) {
+        console.log('👑 Usuário não é admin, acesso negado')
+        next({ 
+          name: 'Unauthorized',
+          query: { 
+            message: 'Acesso restrito a administradores'
+          }
+        })
+        return
+      }
+      
+      // 4. Verificar permissões específicas se definidas
       if (to.meta.permissions && to.meta.permissions.length > 0) {
         const hasPermission = checkUserPermissions(authStore.user, to.meta.permissions)
         
@@ -79,14 +98,6 @@ export function setupAuthGuards(router: Router): void {
           return
         }
       }
-    }
-    
-    // 4. Redirecionar usuários logados das páginas de guest
-    if (requiresGuest && authStore.isAuthenticated) {
-      console.log('👤 Usuário já logado, redirecionando para tela principal')
-      const redirectTo = (to.query.redirect as string) || '/Home'
-      next(redirectTo)
-      return
     }
     
     // 5. Verificar tentativas de login na página de login
@@ -106,6 +117,8 @@ export function setupAuthGuards(router: Router): void {
       document.title = `${to.meta.title} - Sua App`
     }
     
+    // 7. IMPORTANTE: Se chegou até aqui, permitir navegação
+    console.log('✅ Navegação permitida para:', to.name)
     next()
   })
 
@@ -140,7 +153,6 @@ export function setupAuthGuards(router: Router): void {
         const thirtyMinutes = 30 * 60 * 1000
         if (sessionTime < thirtyMinutes && sessionTime > 0) {
           console.log('⚠️ Sessão expira em breve:', Math.floor(sessionTime / 60000), 'minutos')
-          // Aqui você pode mostrar um toast/notificação para o usuário
         }
         
       } catch (error) {
@@ -182,8 +194,9 @@ export function setupAuthGuards(router: Router): void {
 
 // Função auxiliar para verificar role admin
 function checkAdminRole(user: any): boolean {
+  if (!user) return false
+  
   // Adapte conforme sua estrutura User
-  // Exemplos possíveis:
   return user?.role === 'admin' || 
          user?.isAdmin === true || 
          user?.permissions?.includes('admin') ||

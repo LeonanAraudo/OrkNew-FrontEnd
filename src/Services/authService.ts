@@ -9,8 +9,8 @@ console.log('Environment:', import.meta.env.MODE);
 export const authService = {
     async Login(credentials: LoginCredencial): Promise<ServiceResponse<AuthData>> {
         try {
-            const response = await axios.post(`${API_BASE_URL}/api/token`, {
-                email: credentials.email,
+            const response = await axios.post(`${API_BASE_URL}/api/token/`, {
+                username: credentials.username,
                 password: credentials.password
             })
             return {
@@ -35,22 +35,23 @@ export const authService = {
             }
         }
     },
-    async validateToken(token: string) {
-        try {
-            const response = await axios.get(``, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            return {
-                success: true,
-                user: response.data.user
-            }
-        } catch (error: any) {
-            return {
-                success: false,
-                error: error.message
-            }
-        }
-    },
+
+    // async validateToken(token: string) {
+    //     try {
+    //             await axios.get(`${API_BASE_URL}/v1/api/users/`, {
+    //             headers: { Authorization: `Bearer ${token}` }
+    //         })
+    //         return {
+    //             success: true,
+    //         }
+    //     } catch (error: any) {
+    //         return {
+    //             success: false,
+    //             error: error.message
+    //         }
+    //     }
+    // },
+
     async Register(credentials: User){
         try{
             const response = await axios.post(`${API_BASE_URL}/v1/api/users/`,{

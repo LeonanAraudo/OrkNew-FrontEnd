@@ -9,12 +9,11 @@ import Step from 'primevue/step';
 import StepPanel from 'primevue/steppanel';
 import { reactive, ref } from 'vue';
 import { useRegister } from '../../Composables/useRegister';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import { goToLogin } from '../../Utils/goToRoutes';
 import { useValidation } from '../../Composables/useFormValidation';
 import { stepOneSchema, stepTwoSchema } from '../../Schemas/validationRegisterForm';
 
-const route = useRoute()
 const router = useRouter()
 const { register, isLoading } = useRegister()
 
@@ -58,7 +57,7 @@ const goToStep = (targetStep: string, activateCallback: Function) => {
   activateCallback(targetStep)
 }
 
-const toLogin = () => goToLogin(router, route)
+const toLogin = () => goToLogin(router)
 
 const handleSubmit = async (): Promise<void> => {
   const allStepsValid = ['1', '2'].every(step => validateStep(step))

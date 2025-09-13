@@ -5,7 +5,6 @@ import FormRegister from '../Components/forms/FormRegister.vue';
 </script>
 
 <template>
-
     <div class="conteiner">
         <FormRegister />
     </div>

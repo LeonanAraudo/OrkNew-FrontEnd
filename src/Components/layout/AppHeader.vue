@@ -1,7 +1,7 @@
 <script setup>
-import BaseHeaderIcons from '../common/HeaderComponents/HeaderIcons.vue';
-import BaseProfileIcon from '../common/HeaderComponents/ProfileIcon.vue';
-import BaseSearchUser from '../common/HeaderComponents/SearchUser.vue';
+import BaseHeaderIcons from '../common/HeaderComponents/BaseHeaderIcons.vue';
+import BaseProfileIcon from '../common/HeaderComponents/BaseProfileIcon.vue';
+import BaseSearchUser from '../common/HeaderComponents/BaseSearchUser.vue';
 </script>
 <template>
     <div class="containerHeader">

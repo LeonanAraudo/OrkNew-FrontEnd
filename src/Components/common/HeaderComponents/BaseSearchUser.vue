@@ -16,5 +16,6 @@ const value1 = ref('')
 <style scoped>
     .searchButton{
         width: 100% !important;
+        background-color: #fff !important;
     }
 </style>

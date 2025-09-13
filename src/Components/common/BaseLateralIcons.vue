@@ -17,8 +17,8 @@
     <img 
       :src="iconUrl" 
       :alt="label"
-      :width="60"
-      :height="60"
+      :width="50"
+      :height="50"
       class="imgIcon"
     />
   </div>
@@ -48,10 +48,11 @@
     .sidebar-icon__label{
       font-family: "Montserrat";
       color: #4B4B4B;
+      font-size: 14px;
     }
     .iconsLateralBox{
-      width: 56px;
-      height: 56px;
+      width: 45px;
+      height: 45px;
       margin-top: 10px;
     }
 </style>

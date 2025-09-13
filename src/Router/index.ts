@@ -3,18 +3,10 @@ import type { RouteRecordRaw } from 'vue-router'
 import { setupAuthGuards, routeMeta } from './guard'
 
 const routes: Array<RouteRecordRaw> = [
-  {
-  path: '/',
-  name: 'Home',
-  component: () => import('../Views/MainPages/Home.vue'), 
-  meta: {
-    ...routeMeta.requiresAuth, 
-    ...routeMeta.withTitle('Home') 
-  }
+  // Rota raiz - redireciona baseado na autenticação
 
-  },
 
-  // Rotas de autenticação (só para usuários deslogados)
+  // Páginas públicas (não requer autenticação)
   {
     path: '/Login',
     name: 'Login',
@@ -22,18 +14,48 @@ const routes: Array<RouteRecordRaw> = [
     meta: {
       ...routeMeta.requiresGuest,
       ...routeMeta.withTitle('Entrar')
+    },
+    beforeEnter: (to, _from, next) => {
+      if (!to.query.message) {
+        next({
+          path: to.path,
+          query: {
+            ...to.query,
+            message: 'Faça login',
+            redirect: to.query.redirect?.toString() || '/Home',
+          }
+        })
+      } else {
+        next()
+      }
     }
   },
-   {
+
+  {
     path: '/Register',
     name: 'Register',
     component: () => import('../Views/Register.vue'),
     meta: {
+      ...routeMeta.requiresGuest, 
       ...routeMeta.withTitle('Cadastrar')
+    },
+    beforeEnter: (to, _from, next) => {
+      if (!to.query.message) {
+        next({
+          path: to.path,
+          query: {
+            ...to.query,
+            message: 'Cadastre-se',
+            redirect: to.query.redirect?.toString() || '/Login',
+          }
+        })
+      } else {
+        next()
+      }
     }
   },
- 
-//  Página para quando tentativas de login esgotam
+
+  // Página para quando tentativas de login esgotam
   {
     path: '/login-blocked',
     name: 'LoginBlocked',
@@ -44,30 +66,36 @@ const routes: Array<RouteRecordRaw> = [
   },
 
   // Rotas protegidas (requer autenticação)
-  // {
-  //   path: '/dashboard',
-  //   name: 'Dashboard',
-  //   component: () => import('@/views/DashboardView.vue'),
-  //   meta: {
-  //     ...routeMeta.requiresAuth,
-  //     ...routeMeta.withTitle('Dashboard')
-  //   }
-  // },
-  // {
-  //   path: '/profile',
-  //   name: 'Profile',
-  //   component: () => import('@/views/ProfileView.vue'),
-  //   meta: {
-  //     ...routeMeta.requiresAuth,
-  //     ...routeMeta.withTitle('Meu Perfil')
-  //   }
-  // },
+  {
+    path: '/Home',
+    name: 'Home',
+    component: () => import('../Views/MainPages/Home.vue'), 
+    meta: {
+      ...routeMeta.requiresAuth, 
+      ...routeMeta.withTitle('Home')
+      
+    },
+     beforeEnter: (to, _from, next) => {
+      if (!to.query.message) {
+        next({
+          path: to.path,
+          query: {
+            ...to.query,
+            message: 'Bem Vindo',
+            redirect: to.query.redirect?.toString() || '/Login',
+          }
+        })
+      } else {
+        next()
+      }
+    }
+  },
 
   // Páginas de erro
   // {
   //   path: '/unauthorized',
   //   name: 'Unauthorized',
-  //   component: () => import('@/views/error/UnauthorizedView.vue'),
+  //   component: () => import('../Views/error/UnauthorizedView.vue'), // Você precisa criar este componente
   //   meta: {
   //     ...routeMeta.withTitle('Acesso Negado')
   //   }
@@ -75,13 +103,13 @@ const routes: Array<RouteRecordRaw> = [
   // {
   //   path: '/not-found',
   //   name: 'NotFound',
-  //   component: () => import('#'),
+  //   component: () => import('../Views/error/NotFoundView.vue'), // Você precisa criar este componente
   //   meta: {
   //     ...routeMeta.withTitle('Página Não Encontrada')
   //   }
   // },
 
-  // Catch-all
+  // Catch-all - deve ser a última rota
   {
     path: '/:pathMatch(.*)*',
     redirect: '/not-found'
@@ -105,10 +133,11 @@ setupAuthGuards(router)
 // Log de navegação em desenvolvimento
 if (import.meta.env.DEV) {
   router.beforeEach((to, from, next) => {
-    console.group('🧭 Router Navigation')
+    console.group('🧭 Router Navigation Debug')
     console.log('From:', from.fullPath)
     console.log('To:', to.fullPath)
     console.log('Meta:', to.meta)
+    console.log('Query:', to.query)
     console.groupEnd()
     next()
   })

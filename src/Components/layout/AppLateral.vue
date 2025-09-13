@@ -1,5 +1,5 @@
 <script setup>
-import LateralIcons from '../common/LateralIcons.vue';
+import LateralIcons from '../common/BaseLateralIcons.vue';
 import { ref } from 'vue'
 const activeItem = ref('Home')
 

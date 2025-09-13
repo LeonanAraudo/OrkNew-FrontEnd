@@ -6,48 +6,54 @@ import { useAuthStore } from '../../Stores/authStore';
 import { onUnmounted, reactive } from 'vue';
 import { type LoginForm, formLogin } from '../../Schemas/validationLoginForm';
 import { useValidation } from '../../Composables/useFormValidation';
-import { useRoute, useRouter } from 'vue-router';
-import { goToRegister } from '../../Utils/goToRoutes';
+import { useRouter } from 'vue-router';
 
 const router = useRouter()
-const route = useRoute()
-const { errors, validate} = useValidation<LoginForm>(formLogin)
-const form = reactive<LoginForm>({
-    email: '',
-    password: ''
-})
 const authStore = useAuthStore()
 
-function handleClick(){
-goToRegister(router, route)
+const { errors, validate} = useValidation<LoginForm>(formLogin)
+const form = reactive<LoginForm>({
+    username: '',
+    password: ''
+})
+
+function handleClickRegister(){ 
+  router.push('/Register')
 }
 
-async function handleLogin (): Promise<void> {
-    const credentials = validate(form)
-    if(!credentials) return
+async function handleLogin(): Promise<void> {
+    try {
+        const credentials = validate(form)
+        if (!credentials) return
+        console.log('🚀 Iniciando processo de login...')
         const result = await authStore.login(credentials)
-        if(result.success){
-            console.log("Login realizado com sucesso")
-        }else{
-            console.log("Erro ao tentar enviar os dados de login", result.error)
+        if (!result) {
+            console.error("❌ Login falhou: resultado indefinido")
+            return
         }
+        if (result.success) {
+            console.log("✅ Login realizado com sucesso")
+            router.push( '/Home')
+        }
+    } catch (error) {
+        console.error("❌ Erro inesperado durante o login:", error)
+    }
 }
-
 onUnmounted(() => {
-    form.email = ''
+    form.username = ''
     form.password = ''
     for (const key in errors) delete errors[key];
 })
 </script>
 
 <template>
-      <Form @submit.prevent="handleLogin" class="formularioLogin" >
+      <form @submit.prevent="handleLogin" class="formularioLogin" >
                 <p class="titulo">Entre e sinta-se à vontade</p>
                 <div class="grupoInput">
                     <div class="bloco-input">
                             <label for="email" class="label">E-mail</label>
                             <InputText 
-                                v-model="form.email"
+                                v-model="form.username"
                                 placeholder="seu@email.com"
                                 id="email"  
                                 class="input" 
@@ -80,9 +86,9 @@ onUnmounted(() => {
                    />
                 </div>
                 <div>
-                    <p class="textoBaixo">Ainda não tem conta?<span @click="handleClick" class="textoBaixoPT2">Cadastre-se</span></p>
+                    <p class="textoBaixo">Ainda não tem conta?<span @click="handleClickRegister" class="textoBaixoPT2">Cadastre-se</span></p>
                 </div>
-            </Form> 
+            </form> 
 </template>
 
 <style>

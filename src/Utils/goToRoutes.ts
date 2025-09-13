@@ -1,27 +1,13 @@
-import type { Router, RouteLocationNormalized } from 'vue-router';
+import type { Router } from 'vue-router';
 
-export function goToRegister(
-  router: Router,
-  route: RouteLocationNormalized
-) {
-  router.push({
-    path: '/Register',
-    query: {
-      redirect: route.query.redirect?.toString() || '/',
-      message: "Cadastre-se"
-    }
-  });
+export function goToHome(router: Router) {
+    router.push('/Home')
 }
 
-export function goToLogin(
-  router: Router,
-  route: RouteLocationNormalized
-) {
-  router.push({
-    path: '/Login',
-    query: {
-      redirect: route.query.redirect?.toString() || '/',
-      message: route.query.message?.toString() || ''
-    }
-  });
+export function goToRegister(router: Router) {
+  router.push('/Register')
+}
+
+export function goToLogin(router: Router) {
+  router.push('/Login')
 }

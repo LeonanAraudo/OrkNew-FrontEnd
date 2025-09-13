@@ -7,7 +7,7 @@ export interface User {
 
 export interface AuthData {
   user: User;
-  token: string;
+  access: string;
 }
 
 export interface ServiceResponse<T> {
@@ -17,6 +17,6 @@ export interface ServiceResponse<T> {
 }
 
 export interface LoginCredencial{
-    email:string,
-    password: string
+    username:string,
+    password: string,
 }

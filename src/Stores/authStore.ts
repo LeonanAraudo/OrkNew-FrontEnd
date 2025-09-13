@@ -24,24 +24,24 @@ export const useAuthStore = defineStore("auth", {
   },
 
   actions: {
-    // async login(credentials: LoginCredencial) {
-    //   this.isLoading = true;
-    //   try {
-    //     const result: ServiceResponse<AuthData> = await authService.Login(credentials);
-    //     if (result.success && result.data) {
-    //       this.token = result.data.token;
-    //       this.loginAttempts = 0;
-    //       this.lastLoginTime = Date.now();
-    //       this.persistSession();
-    //       return { success: true };
-    //     } else {
-    //       this.loginAttempts++;
-    //       return { success: false, error: result.error };
-    //     }
-    //   } finally {
-    //     this.isLoading = false;
-    //   }
-    // },
+    async login(credentials: LoginCredencial) {
+      this.isLoading = true;
+      try {
+        const result: ServiceResponse<AuthData> = await authService.Login(credentials);
+        if (result.success && result.data) {
+          this.token = result.data.access;
+          this.loginAttempts = 0;
+          this.lastLoginTime = Date.now();
+          this.persistSession();
+          return { success: true };
+        } else {
+          this.loginAttempts++;
+          return { success: false, error: result.error };
+        }
+      } finally {
+        this.isLoading = false;
+      }
+    },
 
     async logout() {
       try {
@@ -50,60 +50,13 @@ export const useAuthStore = defineStore("auth", {
         this.clearSession();
       }
     },
-    async login(credentials: LoginCredencial) {
-      this.isLoading = true;
-      try {
-        console.log('🔐 AuthStore - Iniciando login...');
-        const result: ServiceResponse<AuthData> = await authService.Login(credentials);
-
-        if (result.success && result.data) {
-          console.log('🔐 AuthStore - Dados recebidos:', result.data);
-
-          this.token = result.data.access;
-          this.loginAttempts = 0;
-          this.lastLoginTime = Date.now();
-
-          console.log('🔐 AuthStore - Estado ANTES de persistir:', {
-            token: this.token?.substring(0, 20) + '...',
-            isAuthenticated: this.isAuthenticated,
-            user: this.user
-          });
-
-          this.persistSession();
-
-          console.log('🔐 AuthStore - Estado APÓS persistir:', {
-            isAuthenticated: this.isAuthenticated,
-            localStorage: !!localStorage.getItem("access")
-          });
-
-          return { success: true };
-        }
-      }catch(error){
-
-      }
-},
-
+ 
 async checkSession() {
-      console.log('🔍 AuthStore - INÍCIO checkSession');
-      console.log('🔍 Estado atual:', {
-        token: this.token?.substring(0, 10) + '...',
-        isAuthenticated: this.isAuthenticated
-      });
-
       const token = localStorage.getItem("access");
-      console.log('🔍 Token no localStorage:', !!token);
-
       if (token) {
         this.token = token;
-
-        console.log('🔍 AuthStore - APÓS restaurar:', {
-          isAuthenticated: this.isAuthenticated,
-          hasUser: !!this.user
-        });
-
         return true;
       }
-
       this.clearSession();
       return false;
     },

@@ -1,6 +1,16 @@
 <script setup>
+import { provide, ref } from 'vue';
 import AppHeader from './AppHeader.vue';
 import AppLateral from './AppLateral.vue';
+import BaseHeaderPerfil from '../common/PerfilComponents/BaseHeaderPerfil.vue'
+const activeItem = ref('Home')
+provide('activeItem',activeItem)
+const components = {
+    Home: BaseHeaderPerfil,
+    explore:'',
+    Likes:'',
+    Config:''
+}
 </script>
 <template>
     <div class="containerBackground">
@@ -12,7 +22,7 @@ import AppLateral from './AppLateral.vue';
                 <AppLateral/>
             </div>
             <div class="whiteBox">
-
+                <component :is="components[activeItem]"/>
             </div>
         </div>
     </div>

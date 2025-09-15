@@ -1,7 +1,8 @@
 <script setup>
 import LateralIcons from '../common/BaseLateralIcons.vue';
-import { ref } from 'vue'
-const activeItem = ref('Home')
+import { inject, ref } from 'vue'
+
+const activeItem = inject('activeItem')
 
 function selectItem(itemId) {
   activeItem.value = itemId 
@@ -17,7 +18,7 @@ const data = [
     <div class="containerLateral">
         <div class="lateralIcons">
             <LateralIcons
-            v-for="(item,index) in data"
+                v-for="(item,index) in data"
                 :key="index"
                 :icon-url="item.iconUrl"
                 :label="item.label"

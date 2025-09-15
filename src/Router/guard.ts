@@ -43,7 +43,6 @@ export function setupAuthGuards(router: Router): void {
       to: to.name,
       from: from.name,
       isAuthenticated: authStore.isAuthenticated,
-      user: authStore.user?.userName,
       requiresAuth,
       requiresGuest,
       requiresAdmin,

@@ -52,8 +52,10 @@ export const useAuthStore = defineStore("auth", {
     },
  
 async checkSession() {
+      const lastLogin = localStorage.getItem("last_login");
       const token = localStorage.getItem("access");
       if (token) {
+        if (lastLogin) this.lastLoginTime = Number(lastLogin);
         this.token = token;
         return true;
       }
@@ -63,25 +65,16 @@ async checkSession() {
 
       persistSession() {
       if (this.token) localStorage.setItem("access", this.token);
-      if (this.user) localStorage.setItem("auth_user", JSON.stringify(this.user));
       if (this.lastLoginTime) localStorage.setItem("last_login", this.lastLoginTime.toString());
     },
 
     clearSession() {
-      this.user = null;
       this.token = null;
       this.lastLoginTime = null;
 
       localStorage.removeItem("access");
-      localStorage.removeItem("auth_user");
       localStorage.removeItem("last_login");
     },
 
-    updateUser(userData: Partial<User>) {
-      if (this.user) {
-        this.user = { ...this.user, ...userData };
-        localStorage.setItem("auth_user", JSON.stringify(this.user));
-      }
-    },
   },
 });

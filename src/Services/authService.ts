@@ -24,6 +24,31 @@ export const authService = {
             }
         }
     },
+     async getUser(): Promise<ServiceResponse<User>> {
+        try {
+            const token = localStorage.getItem('access'); 
+            if (!token) {
+                return {
+                    success: false,
+                    error: 'Token não encontrado'
+                }
+            }
+            const response = await axios.get(`${API_BASE_URL}/v1/api/users/me/`, {
+                headers: { 
+                    Authorization: `Bearer ${token}` 
+                }
+            });
+            return {
+                success: true,
+                data: response.data
+            }
+        } catch (error: any) {
+            return {
+                success: false,
+                error: error.response?.data?.message || 'Erro ao buscar usuário'
+            }
+        }
+    },
     async logout() {
         try {
             await axios.post(``)
@@ -55,7 +80,7 @@ export const authService = {
     async Register(credentials: User){
         try{
             const response = await axios.post(`${API_BASE_URL}/v1/api/users/`,{
-                username: credentials.userName,
+                username: credentials.username,
                 email: credentials.email,
                 password: credentials.password
             })

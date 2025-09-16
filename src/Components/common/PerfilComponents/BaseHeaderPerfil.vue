@@ -1,7 +1,30 @@
 <script setup>
+import { computed, onMounted } from 'vue';
+import { useAuthStore } from '../../../Stores/authStore';
+
+const authStore = useAuthStore();
+const user = computed(() => authStore.user);
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+const isLoading = computed(() => authStore.isLoading);
+
+const loadUserData = async () => {
+  const result = await authStore.getUsers();
+  const data = await result.json()
+  if (!result.success) {
+    console.error('Erro ao carregar usuário:', result.error);
+  }
+};
+onMounted(async () => {
+  if (isAuthenticated.value && !user.value) {
+    await loadUserData();
+  }
+});
 </script>
 <template>
-    <div class="HeaderPerfilContainer">
+    <div v-if="isLoading" class="loading-container">
+        Carregando...
+    </div>
+    <div v-else-if="user" class="HeaderPerfilContainer">
         <div class="bannerImgBox">
              <img class="img" src="../../../assets/imagee.png" alt="banner"/>
         </div>
@@ -11,7 +34,7 @@
                     <img class="img" src="../../../assets/image3.png" alt="banner"/>
                 </div>
                 <div class="userNameBox">
-                    <p class="username">Leonan Reis</p>
+                    <p class="username">{{ user.username }}</p>
                     <p class="arroba">@LeonanReis199219238</p>
                     <div class="costumerBox">
                         <p>Estudante</p>
@@ -22,15 +45,15 @@
             <div class="followersBox">
                 <div class="followersContent">
                    <p class="followersName">Seguindo</p>
-                   <p class="followersAmount">20</p>
+                   <p class="followersAmount">{{ user.qtd_seguindo }}</p>
                 </div>
                 <div class="followersContent">
                     <p class="followersName">Seguidores</p>
-                    <p class="followersAmount">5600</p>
+                    <p class="followersAmount">{{ user.qtd_seguidores }}</p>
                 </div>
                 <div class="followersContent">
                     <p class="followersName">Postagens</p>
-                    <p class="followersAmount">20</p>
+                    <p class="followersAmount">{{ user.qtd_publicacao }}</p>
                 </div>
             </div>
             <div class="btnBox">

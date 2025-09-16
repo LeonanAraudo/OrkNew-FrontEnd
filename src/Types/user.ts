@@ -2,7 +2,12 @@
 export interface User {
   email: string;
   password: string;
-  userName: string;
+  username: string;
+  img_profile: string,
+  img_background: string,
+  qtd_seguindo: number,
+  qtd_seguidores: number,
+  qtd_publicacao: number
 }
 
 export interface AuthData {

@@ -1,30 +1,32 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useAuthStore } from '../../../Stores/authStore';
+import BaseEditPerfil from './BaseEditPerfil.vue';
 
 const authStore = useAuthStore();
 const user = computed(() => authStore.user);
 const isAuthenticated = computed(() => authStore.isAuthenticated);
 const isLoading = computed(() => authStore.isLoading);
 
-const loadUserData = async () => {
-  const result = await authStore.getUsers();
-  const data = await result.json()
-  if (!result.success) {
-    console.error('Erro ao carregar usuário:', result.error);
-  }
-};
-onMounted(async () => {
-  if (isAuthenticated.value && !user.value) {
-    await loadUserData();
-  }
-});
+// const loadUserData = async () => {
+//   const result = await authStore.getUsers();
+//   const data = await result.json()
+//   if (!result.success) {
+//     console.error('Erro ao carregar usuário:', result.error);
+//   }
+// };
+// onMounted(async () => {
+//   if (isAuthenticated.value && !user.value) {
+//     await loadUserData();
+//   }
+// });
 </script>
 <template>
-    <div v-if="isLoading" class="loading-container">
+    <!-- <div v-if="isLoading" class="loading-container">
         Carregando...
-    </div>
-    <div v-else-if="user" class="HeaderPerfilContainer">
+        v-else-if="user"
+    </div> -->
+    <div  class="HeaderPerfilContainer">
         <div class="bannerImgBox">
              <img class="img" src="../../../assets/imagee.png" alt="banner"/>
         </div>
@@ -34,7 +36,7 @@ onMounted(async () => {
                     <img class="img" src="../../../assets/image3.png" alt="banner"/>
                 </div>
                 <div class="userNameBox">
-                    <p class="username">{{ user.username }}</p>
+                    <!-- <p class="username">{{ user.username }}</p> -->
                     <p class="arroba">@LeonanReis199219238</p>
                     <div class="costumerBox">
                         <p>Estudante</p>
@@ -45,20 +47,25 @@ onMounted(async () => {
             <div class="followersBox">
                 <div class="followersContent">
                    <p class="followersName">Seguindo</p>
-                   <p class="followersAmount">{{ user.qtd_seguindo }}</p>
+                   <!-- <p class="followersAmount">{{ user.qtd_seguindo }}</p> -->
                 </div>
                 <div class="followersContent">
                     <p class="followersName">Seguidores</p>
-                    <p class="followersAmount">{{ user.qtd_seguidores }}</p>
+                    <!-- <p class="followersAmount">{{ user.qtd_seguidores }}</p> -->
                 </div>
                 <div class="followersContent">
                     <p class="followersName">Postagens</p>
-                    <p class="followersAmount">{{ user.qtd_publicacao }}</p>
+                    <!-- <p class="followersAmount">{{ user.qtd_publicacao }}</p> -->
                 </div>
             </div>
             <div class="btnBox">
-                <button class="btn">Mensagem</button>
-                <button class="btn">Seguir</button>
+                <div class="spaceButtons">
+                    <button class="btn">Mensagem</button>
+                    <button class="btn">Seguir</button>
+                </div>
+                <div class="editPerfil">
+                    <BaseEditPerfil/>
+                </div>
             </div>
         </div>
     </div>
@@ -88,10 +95,9 @@ onMounted(async () => {
 .btnBox{
     padding-top: 15px;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: baseline;
     justify-content: baseline;
-    gap: 20px;
 }
 .userNameBox{
     padding-top: 10px;
@@ -159,6 +165,19 @@ onMounted(async () => {
 .btn:hover{
     transition: all 0.5s;
     background-color: #a8c3f5;
+}
+.spaceButtons{
+    display: flex;
+    height: 30%;
+    flex-direction: row;
+    gap: 20px;
+}
+.editPerfil{
+    width: 100%;
+    height: 60%;
+    display: flex;
+    align-items:end;
+    justify-content: end;
 }
 .img{
     width: 100%;

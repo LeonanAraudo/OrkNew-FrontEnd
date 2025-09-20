@@ -71,7 +71,6 @@ const routes: Array<RouteRecordRaw> = [
     name: 'Home',
     component: () => import('../Views/MainPages/Home.vue'), 
     meta: {
-      ...routeMeta.requiresAuth, 
       ...routeMeta.withTitle('Home')
       
     },

@@ -72,7 +72,6 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('../Views/MainPages/Home.vue'), 
     meta: {
       ...routeMeta.withTitle('Home')
-      
     },
      beforeEnter: (to, _from, next) => {
       if (!to.query.message) {

@@ -3,11 +3,12 @@ import { provide, ref } from 'vue';
 import AppHeader from './AppHeader.vue';
 import AppLateral from './AppLateral.vue';
 import BaseHeaderPerfil from '../common/PerfilComponents/BaseHeaderPerfil.vue'
+import BaseMountHome from '../common/HomeComponents/BaseMountHome.vue';
 const activeItem = ref('Home')
 provide('activeItem',activeItem)
 const components = {
     Home: BaseHeaderPerfil,
-    explore:'',
+    Explore: BaseMountHome,
     Likes:'',
     Config:''
 }

@@ -9,7 +9,11 @@ export interface User {
   qtd_seguidores: number,
   qtd_publicacao: number
 }
-
+export interface RegisterDTO {
+  username: string;
+  email: string;
+  password: string;
+}
 export interface AuthData {
   user: User;
   access: string;

@@ -23,7 +23,7 @@ const { errors: step2Errors, validate: validateStep2 } = useValidation(stepTwoSc
 const currentStep = ref('1')
 const confirmPassword = ref('')
 const formData = reactive({
-  userName: '',
+  username: '',
   email: '',
   password: ''
 })
@@ -32,7 +32,7 @@ const validateStep = (step: string): boolean => {
   switch(step) {
     case '1':
       const step1Data = {
-        userName: formData.userName,
+        username: formData.username,
         email: formData.email
       }
       return validateStep1(step1Data) !== null
@@ -80,15 +80,15 @@ const handleSubmit = async (): Promise<void> => {
         <StepPanel class="stepPanel" v-slot="{ activateCallback }" value="1">
           <div class="input-box">
             <div class="bloco-input">
-              <label for="username" class="label">Username</label>
+              <label for="n" class="label">Username</label>
               <InputText 
                 id="username" 
-                v-model="formData.userName"
+                v-model="formData.username"
                 placeholder="Digite seu username" 
                 class="input" 
                 :disabled="isLoading"
               />
-              <p v-if="step1Errors.userName" class="error">{{ step1Errors.userName }}</p>
+              <p v-if="step1Errors.username" class="error">{{ step1Errors.username }}</p>
             </div>
             <div class="bloco-input">
               <label for="email" class="label">E-mail</label>

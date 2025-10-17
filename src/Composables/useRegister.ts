@@ -1,13 +1,13 @@
 import { readonly, ref } from "vue";
 import { authService } from "../Services/authService";
-import type { User } from "../Types/user";
+import type { RegisterDTO } from "../Types/user";
 
 export const useRegister = () => {
     const isLoading = ref(false)
     const error = ref<string | null>(null)
     const isSuccess = ref(false)
 
-    const register = async (userData: User) => {
+    const register = async (userData: RegisterDTO) => {
         isLoading.value = true
         error.value = null
         isSuccess.value = true

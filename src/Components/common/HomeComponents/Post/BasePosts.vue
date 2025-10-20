@@ -28,12 +28,14 @@ import LikePost from './LikePost.vue';
                 </div>
             </div>
             <div class="textBox">
-                <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
-                </p>
+                <div class="textContent">
+                    <p >
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quod.
+                    </p>
+                </div>
             </div>
-            <div>
-
+            <div class="imgBox">
+                <img class="imagem" src="https://embratur.com.br/wp-content/uploads/2022/07/Embratur-Brasil-ultrapassa-marca-de-1-milhao-de-turistas-estrangeiros-recebidos-pela-primeira-vez-desde-2020-1.png" alt="" srcset="">
             </div>
             <div class="iconsBox">
                 <div>
@@ -62,6 +64,16 @@ import LikePost from './LikePost.vue';
     justify-content: space-between;
     flex-direction: row;
     padding: 10px;
+}
+.textBox{
+   width: 100%;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   text-align: left;
+}
+.textContent{
+    width: 95%;
 }
 .infoBox{
     display: flex;
@@ -96,6 +108,23 @@ import LikePost from './LikePost.vue';
     align-items: start;
     justify-items:baseline;
     flex-direction: column;
+}
+ .imgBox {
+  width: 100%;
+  max-height: 500px; 
+  overflow: hidden;  
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  margin-top: 15px;
+}
+
+.imagem {
+  width: 97%;       
+  height: auto;      
+  max-height: 500px; 
+  object-fit: cover; 
+  border-radius: 5px;
 }
 .nameBox{
     display: flex;

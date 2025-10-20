@@ -91,7 +91,7 @@ onUnmounted(() => {
             </form> 
 </template>
 
-<style>
+<style scoped>
 .formularioLogin{
     background-color: #FAFEFF;
     display: flex;

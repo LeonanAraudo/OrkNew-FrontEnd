@@ -1,4 +1,5 @@
 <script setup>
+import { Avatar } from 'primevue';
 import BaseButtonPublic from './BaseButtonPublic.vue';
 </script>
 <template>
@@ -11,8 +12,8 @@ import BaseButtonPublic from './BaseButtonPublic.vue';
                 <p>Sugestões para seguir</p>
             </div>
             <div class="sugesItem">
-                <div>
-                    <p>perfil</p>
+                <div class="avatarBox">
+                    <Avatar image="https://primefaces.org/cdn/primevue/images/avatar/amyelsner.png" class="mr-2" size="large" shape="circle" />
                     <p>Nome</p>
                 </div>
                 <div>
@@ -24,7 +25,7 @@ import BaseButtonPublic from './BaseButtonPublic.vue';
 </template>
 <style scoped>
 .containerSuggestions{
-    width: 300px;
+    width: 350px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -59,5 +60,12 @@ import BaseButtonPublic from './BaseButtonPublic.vue';
     padding: 0 50px;
     border: none;
     outline: none;
+}
+.avatarBox{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: 10px;
 }
 </style>

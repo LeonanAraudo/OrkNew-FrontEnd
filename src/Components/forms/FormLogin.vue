@@ -13,7 +13,7 @@ const authStore = useAuthStore()
 
 const { errors, validate} = useValidation<LoginForm>(formLogin)
 const form = reactive<LoginForm>({
-    username: '',
+    email: '',
     password: ''
 })
 
@@ -40,7 +40,7 @@ async function handleLogin(): Promise<void> {
     }
 }
 onUnmounted(() => {
-    form.username = ''
+    form.email = ''
     form.password = ''
     for (const key in errors) delete errors[key];
 })
@@ -53,7 +53,7 @@ onUnmounted(() => {
                     <div class="bloco-input">
                             <label for="email" class="label">E-mail</label>
                             <InputText 
-                                v-model="form.username"
+                                v-model="form.email"
                                 placeholder="seu@email.com"
                                 id="email"  
                                 class="input" 
@@ -65,7 +65,7 @@ onUnmounted(() => {
                    <div class="bloco-input">
                             <label for="senha" class="label">Senha</label>
                             <Password 
-                            v-model="form.password"
+                             v-model="form.password"
                               toggleMask 
                               placeholder="Digite sua senha" 
                               id="senha" 
@@ -169,10 +169,19 @@ input{
     width: 100% !important;
 }
 
-.password-field .p-password-input {
+.password-field :deep(.p-password) {
+    width: 100% !important;
+    background-color: #E3E5ED !important;
+}
+
+.password-field :deep(.p-password-input) {
     border: none !important;
     background-color: #E3E5ED !important;
     width: 100% !important;
+}
+
+.password-field :deep(.p-password-panel) {
+    margin-top: 5px;
 }
 .error{
     color: red;

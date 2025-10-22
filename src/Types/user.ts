@@ -26,6 +26,6 @@ export interface ServiceResponse<T> {
 }
 
 export interface LoginCredencial{
-    username:string,
+    email:string,
     password: string,
 }

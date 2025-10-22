@@ -10,7 +10,7 @@ export const authService = {
     async Login(credentials: LoginCredencial): Promise<ServiceResponse<AuthData>> {
         try {
             const response = await axios.post(`${API_BASE_URL}/api/token/`, {
-                username: credentials.username,
+                email: credentials.email,
                 password: credentials.password
             })
             return {
